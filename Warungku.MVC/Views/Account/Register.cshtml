@@ -1,0 +1,43 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - WarungKu POS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/assets/css/warungku.min.css" />
+    <lin
+</head>
+<body class="bg-light register">
+    <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="card shadow p-4 bg-primary" style="width: 100%; max-width: 400px;">
+            <h4 class="text-center mb-4 text-white">Register New Account</h4>
+            <form>
+                <div class="form-group">
+                    <label class="text-white">Full Name</label>
+                    <input type="text" class="form-control" placeholder="Enter your Full Name" required>
+                </div>
+                <div class="form-group">
+                    <label class="text-white">Email</label>
+                    <input type="email" class="form-control" placeholder="Enter your Email Address" required>
+                </div>
+                <div class="form-group">
+                    <label class="text-white">Password</label>
+                    <input type="password" class="form-control" placeholder="Enter your Password" required>
+                </div>
+                <div class="form-group">
+                    <label class="text-white">Confirm Password</label>
+                    <input type="Confirmpassword" class="form-control" placeholder="Enter your Confirm Password" required>
+                </div>
+                <button type="submit" class="btn btn-success btn-block">Register</button>
+                <div class="text-center mt-3">
+                    <a class="text-white" href="login.html">Have an Account? Sign in</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

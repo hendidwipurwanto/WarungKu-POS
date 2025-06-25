@@ -1,0 +1,222 @@
+﻿
+@{
+    ViewData["Title"] = "Point of Sales - WarungKu POS";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2 class="mb-4"><i class="fas fa-cash-register"></i> Point Of Sales</h2>
+
+<!-- POS Header -->
+<div class="pos-header">
+    <div class="row">
+        <div class="col-md-6">
+            <form>
+                <div class="form-group row">
+                    <label for="userLogin" class="col-sm-6 col-form-label">User Login</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="userLogin" value="Mr. Joe">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="customerName" class="col-sm-6 col-form-label">Customer Name</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="customerName" value="No Name">
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-6">
+            <form>
+                <div class="form-group row">
+                    <label for="discount" class="col-sm-6 col-form-label">Discount (%)</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="discount" value="10" style="text-align:right;">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="voucher" class="col-sm-6 col-form-label">Voucher (Rp)</label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" id="voucher" value="250" style="text-align:right;">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Summary Section -->
+<div class="pos-summary">
+    <div class="row text-center">
+        <div class="col-md-3">
+            <h4>Total</h4>
+            <h3 id="totalAmount">11.000</h3>
+        </div>
+        <div class="col-md-3">
+            <h4>Discount</h4>
+            <h3 class="discount" id="discountAmount">-1.100</h3>
+        </div>
+        <div class="col-md-3">
+            <h4>Voucher</h4>
+            <h3 class="voucher" id="voucherAmount">-250</h3>
+        </div>
+        <div class="col-md-3">
+            <h4>Grand Total</h4>
+            <h3 class="grand-total" id="grandTotal">9.650</h3>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h5>Payment</h5>
+        </div>
+        <div class="payment-buttons">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#cashPaymentModal">
+                Cash
+            </button>
+
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#non_cashPaymentModal">
+                Non Cash
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Add Item Section -->
+<div class="add-item-section">
+    <div class="row align-items-end">
+        <div class="col-md-3">
+            <input type="text" class="form-control" placeholder="Item Code">
+        </div>
+        <div class="col-md-2">
+            <input type="text" class="form-control" placeholder="Quantity">
+        </div>
+        <div class="col-md-2">
+            <input type="text" class="form-control" placeholder="Price">
+        </div>
+        <div class="col-md-2">
+            <input type="text" class="form-control" placeholder="Subtotal" readonly>
+        </div>
+        <div class="col-md-3">
+            <button class="w-100 btn btn-add  btn-secondary"> Add </button>
+        </div>
+    </div>
+</div>
+
+<!-- Items Table -->
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-bordered pos-table mb-0">
+            <thead>
+                <tr>
+                    <th style="width: 30%">Item</th>
+                    <th style="width: 15%">Quantity</th>
+                    <th style="width: 20%">Price</th>
+                    <th style="width: 20%">Subtotal</th>
+                    <th style="width: 15%">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Indomie</td>
+                    <td>2</td>
+                    <td>2000</td>
+                    <td>4000</td>
+                    <td>
+                        <button class="btn-outline-danger" onclick="deleteItem(this)">Delete</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Susu Kotak</td>
+                    <td>1</td>
+                    <td>7000</td>
+                    <td>7000</td>
+                    <td>
+                        <button class="btn-outline-danger" onclick="deleteItem(this)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- start Modal Cash -->
+<div class="modal fade" id="cashPaymentModal" tabindex="-1" aria-labelledby="cashPaymentModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="cashPaymentModal">Cash Payment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row">
+                        <label for="GrandTotal" class="col-sm-4 col-form-label">Grand Total</label>
+                        <div class="col-sm-8">
+                            <input style="text-align:right;" type="text" class="form-control" id="Cash" value="9650" readonly>
+
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="Cash" class="col-sm-4 col-form-label">Cash</label>
+                        <div class="col-sm-8">
+                            <input style="text-align:right;" type="text" class="form-control" id="Cash">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="Change" class="col-sm-4 col-form-label">Change</label>
+                        <div class="col-sm-8">
+                            <input style="text-align:right;" type="text" class="form-control" id="Cash" value="350" readonly>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Ok</button>
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Modal Cash -->
+<!-- start Modal Cash -->
+<div class="modal fade" id="non_cashPaymentModal" tabindex="-1" aria-labelledby="non_cashPaymentModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="non_cashPaymentModal">Non Cash Payment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group row">
+                        <label for="GrandTotal" class="col-sm-4 col-form-label">Grand Total</label>
+                        <div class="col-sm-8">
+                            <input style="text-align:right;" type="text" class="form-control" id="GrandTotal" value="9650" readonly>
+
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="Cash" class="col-sm-4 col-form-label">Evidence No</label>
+                        <div class="col-sm-8">
+                            <input style="text-align:right;" type="text" class="form-control" id="evidenceNo">
+                        </div>
+                    </div>                    
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Ok</button>
+                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Modal Cash -->
+@section Scripts {
+    <script src="~/assets/js/page/pos.js"></script>
+
+}
