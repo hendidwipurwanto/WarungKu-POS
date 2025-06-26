@@ -243,3 +243,7 @@
     border-radius: 15px;
     position: relative
 }
+
+.dataTables_filter {
+    display: none;
+}

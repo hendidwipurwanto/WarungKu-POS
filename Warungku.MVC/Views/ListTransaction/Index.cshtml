@@ -10,10 +10,10 @@
     <div class="row align-items-end">
         <div class="col-md-3">
             <label><strong>Date Transaction</strong></label>
-            <input type="date" class="form-control" value="2025-06-01">
+            <input id="inputSearch" type="text" class="form-control" value="2025-06-01">
         </div>
         <div class="col-md-2">
-            <button class="btn btn-primary">
+            <button id="findButton" class="btn btn-primary">
                 <i class="fas fa-search"></i> Find
             </button>
         </div>
@@ -23,10 +23,10 @@
 <!-- Transaction Table -->
 
 <div class="table-responsive">
-    <table class="table table-hover">
+    <table id="grid" class="table table-hover">
         <thead>
             <tr>
-
+                <th>Id</th>
                 <th>Date</th>
                 <th>User</th>
                 <th>Total</th>
@@ -35,17 +35,6 @@
                 <th>Grand Total</th>
             </tr>
         </thead>
-        <tbody>
-            <tr>
-
-                <td>01-June-2025</td>
-                <td>Mr Joe</td>
-                <td>11.000</td>
-                <td>10%</td>
-                <td>250</td>
-                <td>9650</td>
-            </tr>            
-        </tbody>
     </table>
 </div>
 @section Scripts {
