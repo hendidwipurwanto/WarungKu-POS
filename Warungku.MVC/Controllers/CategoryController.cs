@@ -4,16 +4,18 @@ using Warungku.MVC.Models;
 
 namespace Warungku.MVC.Controllers
 {
-    public class ListTransactionController : Controller
+    public class CategoryController : Controller
     {
-        // GET: ListTransactionController
+        private static readonly string[] Status = { "Active", "Inactive", "Draft" };
+        private static readonly Random _random = new Random();
+        // GET: CategoriesController
         public ActionResult Index()
         {
             return View();
         }
 
         [HttpPost]
-        public JsonResult GetTransactions()
+        public JsonResult GetCategories()
         {
             var draw = Request.Form["draw"].FirstOrDefault();
             var start = Request.Form["start"].FirstOrDefault();
@@ -21,38 +23,32 @@ namespace Warungku.MVC.Controllers
             var searchValue = Request.Form["search[value]"].FirstOrDefault()?.ToLower();
 
             int pageSize = length != null && Convert.ToInt32(length) > 0 ? Convert.ToInt32(length) : 10;
-
             int skip = start != null ? Convert.ToInt32(start) : 0;
 
-            var allTransactions = new List<TransactionResponse>();
+            var allCategories = new List<CategoryResponse>();
             for (int i = 1; i <= 1000; i++)
             {
-                allTransactions.Add(new TransactionResponse
+                allCategories.Add(new CategoryResponse
                 {
-                    Id = i, 
-                    Date = DateTime.Now.ToString("dd-MMMM-yyyy"),
-                     Discount = i+5,
-                      GrandTotal= (10 * i),
-                       Total = 10000 + (i * 100),
-                        User= "Staff-"+i, 
-                    Voucher = 10+ i,                   
+                    Id = i,
+                    Name = $"Category {i}",
+                    Description = " this is description-" + i,
+                    Status = Status[_random.Next(Status.Length)]
                 });
             }
 
 
             if (!string.IsNullOrEmpty(searchValue))
             {
-                allTransactions = allTransactions.Where(p =>
-                    p.Date.ToLower().Contains(searchValue) ||
-                    p.Discount.ToString().Contains(searchValue) ||
-                    p.GrandTotal.ToString().Contains(searchValue) ||
-                    p.User.ToLower().Contains(searchValue) ||
-                    p.Voucher.ToString().Contains(searchValue)
+                allCategories = allCategories.Where(p =>
+                    p.Name.ToLower().Contains(searchValue) ||
+                    p.Status.ToLower().Contains(searchValue) ||
+                    p.Description.ToString().Contains(searchValue)
                 ).ToList();
             }
 
-            int totalRecords = allTransactions.Count;
-            var data = allTransactions.Skip(skip).Take(pageSize).ToList();
+            int totalRecords = allCategories.Count;
+            var data = allCategories.Skip(skip).Take(pageSize).ToList();
 
             return Json(new
             {
@@ -63,19 +59,19 @@ namespace Warungku.MVC.Controllers
             });
         }
 
-        // GET: ListTransactionController/Details/5
+        // GET: CategoriesController/Details/5
         public ActionResult Details(int id)
         {
             return View();
         }
 
-        // GET: ListTransactionController/Create
+        // GET: CategoriesController/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: ListTransactionController/Create
+        // POST: CategoriesController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
@@ -90,13 +86,13 @@ namespace Warungku.MVC.Controllers
             }
         }
 
-        // GET: ListTransactionController/Edit/5
+        // GET: CategoriesController/Edit/5
         public ActionResult Edit(int id)
         {
             return View();
         }
 
-        // POST: ListTransactionController/Edit/5
+        // POST: CategoriesController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
@@ -111,13 +107,13 @@ namespace Warungku.MVC.Controllers
             }
         }
 
-        // GET: ListTransactionController/Delete/5
+        // GET: CategoriesController/Delete/5
         public ActionResult Delete(int id)
         {
             return View();
         }
 
-        // POST: ListTransactionController/Delete/5
+        // POST: CategoriesController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)

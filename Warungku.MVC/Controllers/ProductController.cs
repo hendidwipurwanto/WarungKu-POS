@@ -1,15 +1,65 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Warungku.MVC.Models;
 
 namespace Warungku.MVC.Controllers
 {
-    public class ProductsController : Controller
+    public class ProductController : Controller
     {
         // GET: ProductController
         public ActionResult Index()
         {
             return View();
         }
+
+        [HttpPost]
+        public JsonResult GetProducts()
+        {
+            var draw = Request.Form["draw"].FirstOrDefault();
+            var start = Request.Form["start"].FirstOrDefault();
+            var length = Request.Form["length"].FirstOrDefault();
+            var searchValue = Request.Form["search[value]"].FirstOrDefault()?.ToLower();
+
+            int pageSize = length != null ? Convert.ToInt32(length) : 0;
+            int skip = start != null ? Convert.ToInt32(start) : 0;
+
+            var allProducts = new List<ProductResponse>();
+            for (int i = 1; i <= 1000; i++)
+            {
+                allProducts.Add(new ProductResponse
+                {
+                    Id = i,
+                    Name = $"Product {i}",
+                    Stock = 10 + i,
+                    Price = 10000 + (i * 100),
+                    Category = "Food"
+                });
+            }
+
+       
+            if (!string.IsNullOrEmpty(searchValue))
+            {
+                allProducts = allProducts.Where(p =>
+                    p.Name.ToLower().Contains(searchValue) ||
+                    p.Category.ToLower().Contains(searchValue) ||
+                    p.Price.ToString().Contains(searchValue) ||
+                    p.Stock.ToString().Contains(searchValue)
+                ).ToList();
+            }
+
+            int totalRecords = allProducts.Count;
+            var data = allProducts.Skip(skip).Take(pageSize).ToList();
+
+            return Json(new
+            {
+                draw = draw,
+                recordsTotal = 1000, // total before filtered
+                recordsFiltered = totalRecords, // total after filtered
+                data = data
+            });
+        }
+
+
 
         // GET: ProductController/Details/5
         public ActionResult Details(int id)
