@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using Warungku.MVC.Models;
 
@@ -72,25 +73,43 @@ namespace Warungku.MVC.Controllers
             return View();
         }
 
-        // GET: UserManagementController/Create
+        [HttpGet]
         public ActionResult Create()
         {
-            return View();
+            var roles = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "1", Text = "Manager" },
+                new SelectListItem { Value = "2", Text = "Admin" },
+                new SelectListItem { Value="3", Text="Staff" }
+            };
+            var statuses = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "1", Text = "Active" },
+                new SelectListItem { Value = "2", Text = "InActive" },
+                new SelectListItem { Value="3", Text="Draft" }
+            };
+
+            var model = new UserRequest();
+            model.Roles = new List<SelectListItem>();
+            model.Statuses = new List<SelectListItem>();
+            model.Roles.AddRange(roles);
+            model.Statuses.AddRange(statuses);
+
+            return PartialView("_userModal", model);
         }
 
-        // POST: UserManagementController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(UserRequest request)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+
+                return Json(new { success = true, message = "Data berhasil disimpan!" });
             }
-            catch
-            {
-                return View();
-            }
+
+
+            return PartialView("_userModal", request);
         }
 
         // GET: UserManagementController/Edit/5
