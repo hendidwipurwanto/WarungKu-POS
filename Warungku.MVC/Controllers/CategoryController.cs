@@ -70,7 +70,7 @@ namespace Warungku.MVC.Controllers
         [HttpGet]
         public ActionResult Create()
         {
-            return PartialView("_categoryModal", new CategoryRequest());
+            return PartialView("_addModal", new CategoryRequest());
         }
 
         // POST: CategoriesController/Create
@@ -81,32 +81,34 @@ namespace Warungku.MVC.Controllers
             if (ModelState.IsValid)
             {
 
-                return Json(new { success = true, message = "Data berhasil disimpan!" });
+                return Json(new { success = true, message = "Data Saved Successfully!" });
             }
 
 
-            return PartialView("_categoryModal", request);
+            return PartialView("_addModal", request);
         }
 
-        // GET: CategoriesController/Edit/5
+        
         public ActionResult Edit(int id)
         {
-            return View();
+            return PartialView("_editModal", new CategoryResponse() { Name="testing", Description="wakaka", Status="Active"});
         }
 
-        // POST: CategoriesController/Edit/5
+     
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, CategoryRequest request)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+
+                return Json(new { success = true, message = "Data Saved Successfully!" });
             }
-            catch
-            {
-                return View();
-            }
+            var response = new CategoryResponse() { Name = request.Name, Description = request.Description };
+           
+
+
+            return PartialView("_editModal", response);
         }
 
         // GET: CategoriesController/Delete/5

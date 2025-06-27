@@ -73,15 +73,16 @@ namespace Warungku.MVC.Controllers
         {
             var categories = new List<SelectListItem>
             {
-                new SelectListItem { Value = "1", Text = "Makanan" },
-                new SelectListItem { Value = "2", Text = "Minuman" }
+                new SelectListItem { Value = "1", Text = "Food" },
+                new SelectListItem { Value = "2", Text = "Beverage" },
+                 new SelectListItem { Value = "3", Text = "Snack" }
             };
             
             var model = new ProductRequest();
            model.Categories = new List<SelectListItem>();
             model.Categories.AddRange(categories);
 
-             return PartialView("_productModal", model);
+             return PartialView("_addModal", model);
         }
 
         // POST: CategoriesController/Create
@@ -92,32 +93,40 @@ public ActionResult Create(ProductRequest request)
     if (ModelState.IsValid)
     {
 
-        return Json(new { success = true, message = "Data berhasil disimpan!" });
+        return Json(new { success = true, message = "Data Saved Successfully!" });
     }
 
 
-    return PartialView("_productModal", request);
+    return PartialView("_addModal", request);
 }
 
-        // GET: ProductController/Edit/5 
         public ActionResult Edit(int id)
         {
-            return View();
+            var categories = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "1", Text = "Food" },
+                new SelectListItem { Value = "2", Text = "Beverage" },
+                 new SelectListItem { Value = "3", Text = "Snack" }
+            };
+
+            return PartialView("_editModal", new ProductResponse() { Name = "testing", Price = 1000, Stock = 30 , CategoryId= 3, Categories=categories});
         }
 
-        // POST: ProductController/Edit/5
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, ProductRequest request)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+
+                return Json(new { success = true, message = "Data Saved Successfully!" });
             }
-            catch
-            {
-                return View();
-            }
+            var response = new ProductResponse() { Name = request.Name, Price=Convert.ToDecimal(request.Price), CategoryId=3,  Stock = Convert.ToInt32(request.Stock) };
+
+
+
+            return PartialView("_editModal", response);
         }
 
         // GET: ProductController/Delete/5

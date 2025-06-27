@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Drawing.Text;
 using Warungku.MVC.Models;
 
 namespace Warungku.MVC.Controllers
@@ -36,20 +37,21 @@ namespace Warungku.MVC.Controllers
                 {
                     Id = i,
                      Email ="user"+i+"@mail.com",
-                    Role = Roles[_roleRandom.Next(Roles.Length)],
-                     Status = Status[_statusRandom.Next(Status.Length)],
-                      UserName ="user"+i,
+                       RoleName = Roles[_roleRandom.Next(Roles.Length)],
+                        StatusName = Status[_statusRandom.Next(Status.Length)],
+                    UserName ="user"+i,
                        LastLogin= DateTime.Now.ToString("dd/MM/yyyy")
                 });
             }
+           
 
-
+             
             if (!string.IsNullOrEmpty(searchValue))
             {
                 allProducts = allProducts.Where(p =>
                     p.Email.ToLower().Contains(searchValue) ||
-                    p.Role.ToLower().Contains(searchValue) ||
-                    p.Status.ToString().Contains(searchValue) ||
+                    p.RoleName.ToLower().Contains(searchValue) ||
+                    p.StatusName.ToLower().Contains(searchValue) ||
                     p.UserName.ToString().Contains(searchValue) ||
                     p.LastLogin.ToLower().Contains(searchValue)
                 ).ToList();
@@ -95,7 +97,7 @@ namespace Warungku.MVC.Controllers
             model.Roles.AddRange(roles);
             model.Statuses.AddRange(statuses);
 
-            return PartialView("_userModal", model);
+            return PartialView("_addModal", model);
         }
 
         [HttpPost]
@@ -105,32 +107,47 @@ namespace Warungku.MVC.Controllers
             if (ModelState.IsValid)
             {
 
-                return Json(new { success = true, message = "Data berhasil disimpan!" });
+                return Json(new { success = true, message = "Data Saved Successfully!" });
             }
 
 
-            return PartialView("_userModal", request);
+            return PartialView("_addModal", request);
         }
 
-        // GET: UserManagementController/Edit/5
+        [HttpGet]
         public ActionResult Edit(int id)
         {
-            return View();
+            var roles = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "1", Text = "Manager" },
+                new SelectListItem { Value = "2", Text = "Admin" },
+                new SelectListItem { Value="3", Text="Staff" }
+            };
+            var statuses = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "1", Text = "Active" },
+                new SelectListItem { Value = "2", Text = "InActive" },
+                new SelectListItem { Value="3", Text="Draft" }
+            };
+
+            return PartialView("_editModal", new UserResponse() { UserName = "testing", RoleId = 3, StatusId = 3, RoleOptions = roles, StatusOptions = statuses });
         }
 
-        // POST: UserManagementController/Edit/5
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, UserRequest request)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+
+                return Json(new { success = true, message = "Data Saved Successfully!" });
             }
-            catch
-            {
-                return View();
-            }
+            var response = new UserResponse() { UserName = request.UserName, RoleId=3, StatusId=3, };
+
+
+
+            return PartialView("_editModal", response);
         }
 
         // GET: UserManagementController/Delete/5

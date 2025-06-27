@@ -1,0 +1,48 @@
+﻿@model UserResponse
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Edit" id="editForm" autocomplete="off">
+                @Html.AntiForgeryToken()
+
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="editModalLabel">Edit User</h5>
+                    <button id="xClose" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label asp-for="UserName">User name</label>
+                        <input asp-for="UserName" class="form-control" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="">Role</label>
+                        <select asp-for="RoleId" class="form-control" asp-items="Model.RoleOptions">
+                            <option value="">-- Select Role --</option>
+                        </select>
+                        <span asp-validation-for="RoleId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="">Status</label>
+                        <select asp-for="StatusId" class="form-control" asp-items="Model.StatusOptions">
+                            <option value="">-- Select Status --</option>
+                        </select>
+                        <span asp-validation-for="StatusId" class="text-danger"></span>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button id="cancelBtn" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
