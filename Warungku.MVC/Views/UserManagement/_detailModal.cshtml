@@ -1,0 +1,41 @@
+﻿@model UserResponse
+
+<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Details" id="detailForm" autocomplete="off">
+                @Html.AntiForgeryToken()
+
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="detailModalLabel">Details User</h5>
+                    <button id="xClose" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label asp-for="UserName">User name</label>
+                        <input asp-for="UserName" class="form-control" disabled/>
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="RoleName">Role</label>
+                        <input asp-for="RoleName" class="form-control" disabled />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="StatusId">Status</label>
+                        <input asp-for="StatusName" class="form-control" disabled />
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button id="closeBtn" type="button" class="btn btn-primary w-100">close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

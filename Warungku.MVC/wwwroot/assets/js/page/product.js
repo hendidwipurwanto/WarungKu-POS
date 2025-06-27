@@ -15,7 +15,7 @@ $(document).ready(function () {
         columns: [
             { data: 'id' },
             { data: 'name' },
-            { data: 'category' },
+            { data: 'categoryName' },
             { data: 'price' },
             { data: 'stock' },
             {
@@ -25,7 +25,7 @@ $(document).ready(function () {
                 className: 'text-center',
                 render: function (data, type, row) {
                     return `
-                        <a href="/Products/Details/${row.id}" class="btn btn-sm btn-info">Details</a>
+                        <button class="btn btn-sm btn-info" data-id="${row.id}">Details</button>
                         <button class="btn btn-sm btn-warning btn-edit" data-id="${row.id}">Edit</button>
                         <a href="/Products/Delete/${row.id}" class="btn btn-sm btn-danger">Delete</a>
                     `;
@@ -174,3 +174,29 @@ $(function () {
     });
 });
 //---------------------------------------- End pop up modal Edit  section
+
+//---------------------------------------- Start pop up modal detail  section
+$(function () {
+
+    $('#grid').on('click', '.btn-info', function () {
+        let id = $(this).data('id');
+        $.get('/Product/Details/id', function (data) {
+
+            console.log('------------------------------------');
+            console.log(data);
+            $('#modal-detail-placeholder').html(data);
+           
+            $('#detailModal').modal('show');
+            $('#closeBtn').on('click', function () {
+                $('#detailModal').modal('hide');
+                location.reload();
+            });
+            $('#xClose').on('click', function () {
+                $('#detailModal').modal('hide');
+                location.reload();
+            });
+        });
+    });
+    
+});
+//---------------------------------------- End pop up modal detail  section

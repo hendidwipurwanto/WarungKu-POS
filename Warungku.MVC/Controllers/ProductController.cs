@@ -33,7 +33,7 @@ namespace Warungku.MVC.Controllers
                     Name = $"Product {i}",
                     Stock = 10 + i,
                     Price = 10000 + (i * 100),
-                    Category = "Food"
+                    CategoryName = "Food"
                 });
             }
 
@@ -42,7 +42,7 @@ namespace Warungku.MVC.Controllers
             {
                 allProducts = allProducts.Where(p =>
                     p.Name.ToLower().Contains(searchValue) ||
-                    p.Category.ToLower().Contains(searchValue) ||
+                    p.CategoryName.ToLower().Contains(searchValue) ||
                     p.Price.ToString().Contains(searchValue) ||
                     p.Stock.ToString().Contains(searchValue)
                 ).ToList();
@@ -62,10 +62,9 @@ namespace Warungku.MVC.Controllers
 
 
 
-        // GET: ProductController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            return PartialView("_detailModal", new ProductResponse() { CategoryName="test", Name="testing", Price=1000, Stock=20});
         }
 
         [HttpGet]

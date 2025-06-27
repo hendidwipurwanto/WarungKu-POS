@@ -15,13 +15,13 @@
 
                 <div class="modal-body">
                     <div class="form-group">
-                        <label asp-for="UserName">User name</label>
+                        <label asp-for="UserName" class="required">User name</label>
                         <input asp-for="UserName" class="form-control" />
                         <span asp-validation-for="UserName" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        <label for="">Role</label>
+                        <label for="" class="required">Role</label>
                         <select asp-for="RoleId" class="form-control" asp-items="Model.RoleOptions">
                             <option value="">-- Select Role --</option>
                         </select>
@@ -29,7 +29,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="">Status</label>
+                        <label for="StatusId" class="required">Status</label>
                         <select asp-for="StatusId" class="form-control" asp-items="Model.StatusOptions">
                             <option value="">-- Select Status --</option>
                         </select>

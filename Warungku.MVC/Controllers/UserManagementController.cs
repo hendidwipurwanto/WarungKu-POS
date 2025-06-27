@@ -72,7 +72,7 @@ namespace Warungku.MVC.Controllers
         // GET: UserManagementController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            return PartialView("_detailModal", new UserResponse() { Email="user@mail.com", RoleName="Manager", StatusName="Active"});
         }
 
         [HttpGet]
