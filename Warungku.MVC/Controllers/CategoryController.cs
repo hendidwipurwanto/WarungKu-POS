@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
 using Warungku.MVC.Models;
 
 namespace Warungku.MVC.Controllers
@@ -66,24 +67,25 @@ namespace Warungku.MVC.Controllers
         }
 
         // GET: CategoriesController/Create
+        [HttpGet]
         public ActionResult Create()
         {
-            return View();
+            return PartialView("_categoryModal", new CategoryRequest());
         }
 
         // POST: CategoriesController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(CategoryRequest request)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+
+                return Json(new { success = true, message = "Data berhasil disimpan!" });
             }
-            catch
-            {
-                return View();
-            }
+
+
+            return PartialView("_categoryModal", request);
         }
 
         // GET: CategoriesController/Edit/5

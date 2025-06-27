@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Warungku.MVC.Models;
 
 namespace Warungku.MVC.Controllers
@@ -67,28 +68,38 @@ namespace Warungku.MVC.Controllers
             return View();
         }
 
-        // GET: ProductController/Create
+        [HttpGet]
         public ActionResult Create()
         {
-            return View();
+            var categories = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "1", Text = "Makanan" },
+                new SelectListItem { Value = "2", Text = "Minuman" }
+            };
+            
+            var model = new ProductRequest();
+           model.Categories = new List<SelectListItem>();
+            model.Categories.AddRange(categories);
+
+             return PartialView("_productModal", model);
         }
 
-        // POST: ProductController/Create
+        // POST: CategoriesController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+[ValidateAntiForgeryToken]
+public ActionResult Create(ProductRequest request)
+{
+    if (ModelState.IsValid)
+    {
 
-        // GET: ProductController/Edit/5
+        return Json(new { success = true, message = "Data berhasil disimpan!" });
+    }
+
+
+    return PartialView("_productModal", request);
+}
+
+        // GET: ProductController/Edit/5 
         public ActionResult Edit(int id)
         {
             return View();
