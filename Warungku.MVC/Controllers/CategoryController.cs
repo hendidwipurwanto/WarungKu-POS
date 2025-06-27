@@ -60,10 +60,10 @@ namespace Warungku.MVC.Controllers
             });
         }
 
-        // GET: CategoriesController/Details/5
+       
         public ActionResult Details(int id)
         {
-            return View();
+            return PartialView("_detailModal", new CategoryResponse());
         }
 
         // GET: CategoriesController/Create

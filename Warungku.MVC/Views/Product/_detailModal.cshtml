@@ -1,0 +1,45 @@
+﻿@model ProductResponse
+
+<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Details" method="get" id="detailForm" autocomplete="off">
+             
+
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="detailModalLabel">Details Product</h5>
+                    <button id="xClose" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label asp-for="Name"></label>
+                        <input asp-for="Name" class="form-control" disabled/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="">Category</label>
+                        <input asp-for="CategoryName" class="form-control" disabled />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Price"></label>
+                        <input asp-for="Price" class="form-control" disabled />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Stock"></label>
+                        <input asp-for="Stock" class="form-control" disabled />
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button id="closeBtn" type="button" class="btn btn-primary w-100">close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

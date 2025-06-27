@@ -1,0 +1,35 @@
+﻿@model CategoryResponse
+
+<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <form asp-action="Details" id="detailForm" method="get" autocomplete="off">
+                 <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="categoryModalLabel">Detail Category</h5>
+                    <button id="xClose" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label asp-for="Name"></label>
+                        <input asp-for="Name" class="form-control" disabled />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Description"></label>
+                        <input asp-for="Description" class="form-control" disabled />
+                    </div>
+
+
+                </div>
+
+                <div class="modal-footer">
+                    <button id="closeBtn" type="button" class="btn btn-primary w-100">close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

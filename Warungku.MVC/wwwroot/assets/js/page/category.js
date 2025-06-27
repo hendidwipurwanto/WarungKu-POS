@@ -35,7 +35,7 @@ $(document).ready(function () {
                 className: 'text-center',
                 render: function (data, type, row) {
                     return `
-                        <a href="/Category/Details/${row.id}" class="btn btn-sm btn-info">Details</a>
+                        <button class="btn btn-sm btn-info" data-id="${row.id}">Details</button>
 <button class="btn btn-sm btn-warning btn-edit" data-id="${row.id}">Edit</button>
                         <a href="/Category/Delete/${row.id}" class="btn btn-sm btn-danger">Delete</a>
                     `;
@@ -171,3 +171,65 @@ $(function () {
     });
 });
 //---------------------------------------- End pop up modal edit  section
+
+//---------------------------------------- Start pop up modal detail  section
+$(function () {
+
+    $('#grid').on('click', '.btn-info', function () {
+        let id = $(this).data('id');
+        $.get('/Category/Details/id', function (data) {
+            // Masukkan HTML yang didapat ke dalam placeholder
+            console.log('------------------------------------');
+            console.log(data);
+            $('#modal-detail-placeholder').html(data);
+            // Tampilkan modal
+            $('#detailModal').modal('show');
+            $('#closeBtn').on('click', function () {
+                $('#detailModal').modal('hide');
+                location.reload();
+            });
+            $('#xClose').on('click', function () {
+                $('#detailModal').modal('hide');
+                location.reload();
+            });
+        });
+    });
+    // due to I used event delegation using jquery, I disabled the default submit form behavior
+    $(document).on('submit', '#detailForm', function (e) {
+        e.preventDefault();
+        var form = $(this);
+        if (form.valid()) {
+            $.ajax({
+                type: "POST",
+                url: form.attr('action'),
+                data: form.serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        $('#editModal').modal('hide');
+                        alert(response.message);
+                        location.reload();
+                    } else {
+                        $('#modal-edit-placeholder').html(response);
+                        $('#editModal').modal('show');
+                        $('#cancelBtn').on('click', function () {
+                            $('#editModal').modal('hide');
+                            location.reload();
+                        });
+                        $('#xClose').on('click', function () {
+                            $('#editModal').modal('hide');
+                            location.reload();
+                        });
+                    }
+                },
+                error: function () {
+                    alert("There is some issue when trying to send data");
+                }
+            });
+        }
+    });
+    //clean modal dialog from DOM after modal dialog closed
+    $(document).on('hidden.bs.modal', function (e) {
+        $(e.target).remove();
+    });
+});
+//---------------------------------------- End pop up modal detail  section
