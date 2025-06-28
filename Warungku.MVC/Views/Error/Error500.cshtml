@@ -1,0 +1,21 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 - Internal Server Error</title>
+    <link rel="stylesheet" href="~/assets/vendor/bootstrap/css/bootstrap.min.css">
+</head>
+<body class="bg-light text-center">
+    <div class="container d-flex flex-column justify-content-center align-items-center" style="height: 100vh;">
+        <h1 class="display-1 text-danger">500</h1>
+        <p class="lead">There is an Internal Server Error</p>
+        <a href="@Url.Action("index","Dashboard")" class="btn btn-primary">Back to Dashboard</a>
+    </div>
+</body>
+</html>

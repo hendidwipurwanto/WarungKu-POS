@@ -12,6 +12,7 @@ namespace Warungku.MVC.Controllers
         // GET: CategoriesController
         public ActionResult Index()
         {
+      
             return View();
         }
 

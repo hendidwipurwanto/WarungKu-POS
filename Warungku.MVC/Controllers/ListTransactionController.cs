@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Warungku.MVC.Models;
 
 namespace Warungku.MVC.Controllers
 {
+
     public class ListTransactionController : Controller
     {
         // GET: ListTransactionController
