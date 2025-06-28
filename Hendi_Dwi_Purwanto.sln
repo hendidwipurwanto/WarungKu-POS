@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35818.85 d17.13
+VisualStudioVersion = 17.13.35818.85
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warungku.MVC", "Warungku.MVC\Warungku.MVC.csproj", "{CE4FA6B6-C909-40DA-A1AC-516D3DF2B157}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warungku.Core", "Warungku.Core\Warungku.Core.csproj", "{C3754D46-7042-4134-ADC3-1DC658885636}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Warungku.Test", "Warungku.Test\Warungku.Test.csproj", "{ED91D001-55B7-41DA-A04E-B05468C12196}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{CE4FA6B6-C909-40DA-A1AC-516D3DF2B157}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE4FA6B6-C909-40DA-A1AC-516D3DF2B157}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE4FA6B6-C909-40DA-A1AC-516D3DF2B157}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3754D46-7042-4134-ADC3-1DC658885636}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3754D46-7042-4134-ADC3-1DC658885636}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3754D46-7042-4134-ADC3-1DC658885636}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3754D46-7042-4134-ADC3-1DC658885636}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED91D001-55B7-41DA-A04E-B05468C12196}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED91D001-55B7-41DA-A04E-B05468C12196}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED91D001-55B7-41DA-A04E-B05468C12196}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED91D001-55B7-41DA-A04E-B05468C12196}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
