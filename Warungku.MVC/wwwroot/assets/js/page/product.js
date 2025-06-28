@@ -27,7 +27,7 @@ $(document).ready(function () {
                     return `
                         <button class="btn btn-sm btn-info" data-id="${row.id}">Details</button>
                         <button class="btn btn-sm btn-warning btn-edit" data-id="${row.id}">Edit</button>
-                        <a href="/Products/Delete/${row.id}" class="btn btn-sm btn-danger">Delete</a>
+                       <button class="btn btn-sm btn-danger" data-id="${row.id}">Delete</button>
                     `;
                 }
             }
@@ -200,3 +200,45 @@ $(function () {
     
 });
 //---------------------------------------- End pop up modal detail  section
+
+//---------------------------------------- Start pop up modal Delete  section
+$(function () {
+
+    $('#grid').on('click', '.btn-danger', function () {
+        let id = $(this).data('id');
+        Swal.fire({
+            title: 'Are you sure will delete this?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/Product/Delete/' + id,
+                    type: 'POST',
+                    success: function (response) {
+                        Swal.fire(
+                            'Deleted!',
+                            'Your record has been deleted.',
+                            'success'
+                        ).then(() => {
+                            location.reload(); // atau update tabel pakai JS
+                        });
+                    },
+                    error: function () {
+                        Swal.fire(
+                            'Error!',
+                            'Something went wrong.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    });
+
+});
+//---------------------------------------- End pop up modal Delete  section

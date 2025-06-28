@@ -128,25 +128,13 @@ public ActionResult Create(ProductRequest request)
             return PartialView("_editModal", response);
         }
 
-        // GET: ProductController/Delete/5
+
+        [HttpPost]
         public ActionResult Delete(int id)
         {
-            return View();
+            return Ok();
         }
 
-        // POST: ProductController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        
     }
 }

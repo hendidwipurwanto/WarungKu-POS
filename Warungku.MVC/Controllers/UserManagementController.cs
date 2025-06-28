@@ -150,25 +150,11 @@ namespace Warungku.MVC.Controllers
             return PartialView("_editModal", response);
         }
 
-        // GET: UserManagementController/Delete/5
+        [HttpPost]
         public ActionResult Delete(int id)
         {
-            return View();
-        }
+            return Ok();
 
-        // POST: UserManagementController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
     }
 }
