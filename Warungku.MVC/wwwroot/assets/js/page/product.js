@@ -13,7 +13,7 @@ $(document).ready(function () {
             type: 'POST'
         },
         columns: [
-            { data: 'id' },
+            { data: 'id', visible: false },
             { data: 'name' },
             { data: 'categoryName' },
             { data: 'price' },
@@ -74,13 +74,20 @@ $(function () {
                 data: form.serialize(),
                 success: function (response) {
                     if (response.success) {
-                        //if succeed close the modal and reload the page
                         $('#addModal').modal('hide');
-                        alert(response.message);
-                        location.reload();
-                    } else {// if not  display the error
-                        console.log('error submit---------------');
-                        console.log(response);
+                        Swal.fire({
+                            title: 'Success!',
+                            text: response.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+
+                                location.reload();
+                            }
+                        });
+
+                    } else {
                         $('#modal-add-placeholder').html(response);
                         $('#addModal').modal('show');
                         $('#cancelBtn').on('click', function () {
@@ -88,7 +95,7 @@ $(function () {
                             location.reload();
                         });
                         $('#xClose').on('click', function () {
-                            $('#productModal').modal('hide');
+                            $('#addModal').modal('hide');
                             location.reload();
                         });
                     }
@@ -114,7 +121,7 @@ $(function () {
 
     $('#grid').on('click', '.btn-edit', function () {
         let id = $(this).data('id');
-        $.get('/Product/Edit/id', function (data) {
+        $.get('/Product/Edit/'+ id, function (data) {
             // Masukkan HTML yang didapat ke dalam placeholder
             console.log('------------------------------------');
             console.log(data);
@@ -143,13 +150,19 @@ $(function () {
                 data: form.serialize(),
                 success: function (response) {
                     if (response.success) {
-                        //if succeed close the modal and reload the page
                         $('#editModal').modal('hide');
-                        alert(response.message);
-                        location.reload();
-                    } else {// if not  display the error
-                        console.log('error submit---------------');
-                        console.log(response);
+                        Swal.fire({
+                            title: 'Success!',
+                            text: response.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+
+                                location.reload();
+                            }
+                        });
+                    } else {
                         $('#modal-edit-placeholder').html(response);
                         $('#editModal').modal('show');
                         $('#cancelBtn').on('click', function () {
@@ -180,7 +193,7 @@ $(function () {
 
     $('#grid').on('click', '.btn-info', function () {
         let id = $(this).data('id');
-        $.get('/Product/Details/id', function (data) {
+        $.get('/Product/Details/'+id, function (data) {
 
             console.log('------------------------------------');
             console.log(data);

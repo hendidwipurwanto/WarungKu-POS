@@ -1,0 +1,42 @@
+﻿@model Warungku.Core.Domain.DTOs.LoginRequest
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in - WarungKu POS</title>
+    <link rel="stylesheet" href="~/assets/vendor/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/assets/css/warungku.min.css" />
+</head>
+<body class="bg-light">
+    <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="card shadow p-4 bg-primary" style="width: 100%; max-width: 400px;">
+            <h4 class="text-center mb-4 text-white">Sign in to POS</h4>
+            <div class="d-flex justify-content-center align-items-center" style="margin-bottom:10px;">
+                <img src="~/assets/img/logo.png" width="50%" />
+            </div>
+            <form>
+                <div class="form-group">
+                    <label class="text-white">Username or Email Address</label>
+                    <input asp-for="Username" type="text" class="form-control" placeholder="Enter your Username or Email Address" />
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="text-white">Password</label>
+                    <input asp-for="Password" type="text" class="form-control" placeholder="Enter your Password ..." />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-success btn-block">Sign in</button>
+                <div class="text-center mt-3">
+                    <a class="text-white" href="register.html">Don't have an Account? Register</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+

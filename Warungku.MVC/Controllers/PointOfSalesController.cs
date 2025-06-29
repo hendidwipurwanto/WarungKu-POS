@@ -9,6 +9,7 @@ namespace Warungku.MVC.Controllers
         // GET: PointOfSalesController
         public ActionResult Index()
         {
+            ViewBag.currentUser = User.Identity.Name;
             return View();
         }
         [HttpPost]

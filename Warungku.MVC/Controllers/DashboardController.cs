@@ -1,13 +1,17 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Warungku.MVC.Controllers
 {
+    [Authorize]
     public class DashboardController : Controller
     {
-        // GET: DashboardController
+
         public ActionResult Index()
         {
+
+            ViewBag.currentUser = User.Identity.Name;
             return View();
         }
 

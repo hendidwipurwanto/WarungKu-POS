@@ -1,4 +1,6 @@
-﻿@{
+﻿@model Warungku.Core.Domain.DTOs.RegisterRequest
+
+@{
     Layout = null;
 }
 <!DOCTYPE html>
@@ -7,37 +9,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - WarungKu POS</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/assets/vendor/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="~/assets/css/warungku.min.css" />
-    <lin
 </head>
 <body class="bg-light register">
     <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
         <div class="card shadow p-4 bg-primary" style="width: 100%; max-width: 400px;">
             <h4 class="text-center mb-4 text-white">Register New Account</h4>
-            <form>
+            <form asp-action="Register" method="post"  asp-controller="Account">
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <label class="text-white">User Name</label>
+                    <input asp-for="Username" type="text" class="form-control" placeholder="Enter your Username or Email Address" />
+                    <span asp-validation-for="Username" class="text-white"></span>
+                </div>
                 <div class="form-group">
                     <label class="text-white">Full Name</label>
-                    <input type="text" class="form-control" placeholder="Enter your Full Name" required>
+                    <input asp-for="FullName" type="text" class="form-control" placeholder="Enter your FullName" />
+                    <span asp-validation-for="FullName" class="text-white"></span>
                 </div>
                 <div class="form-group">
                     <label class="text-white">Email</label>
-                    <input type="email" class="form-control" placeholder="Enter your Email Address" required>
+                    <input asp-for="Email" type="text" class="form-control" placeholder="Enter your Email" />
+                    <span asp-validation-for="FullName" class="text-white"></span>
                 </div>
                 <div class="form-group">
                     <label class="text-white">Password</label>
-                    <input type="password" class="form-control" placeholder="Enter your Password" required>
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Enter your Password" />
+                    <span asp-validation-for="Password" class="text-white"></span>
                 </div>
-                <div class="form-group">
-                    <label class="text-white">Confirm Password</label>
-                    <input type="Confirmpassword" class="form-control" placeholder="Enter your Confirm Password" required>
-                </div>
+
                 <button type="submit" class="btn btn-success btn-block">Register</button>
                 <div class="text-center mt-3">
-                    <a class="text-white" href="login.html">Have an Account? Sign in</a>
+                    <a class="text-white" href="@Url.Action("Signin","Account")">Have an Account? Sign in</a>
                 </div>
             </form>
         </div>
     </div>
 </body>
 </html>
+

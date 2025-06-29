@@ -11,6 +11,7 @@ namespace Warungku.MVC.Controllers
         // GET: ListTransactionController
         public ActionResult Index()
         {
+            ViewBag.currentUser = User.Identity.Name;
             return View();
         }
 

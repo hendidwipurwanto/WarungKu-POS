@@ -2,7 +2,7 @@
 
 namespace Warungku.MVC.Models
 {
-    public class UserResponse
+    public class UserResponse_
     {
         public int Id { get; set; }
 

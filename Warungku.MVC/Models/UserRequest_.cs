@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Warungku.MVC.Models
 {
-    public class UserRequest
+    public class UserRequest_
     {
         [Required]
         public string UserName { get; set; }

@@ -1,4 +1,4 @@
-﻿@model UserRequest
+﻿@model Warungku.Core.Domain.DTOs.UserRequest
 
 <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -22,19 +22,31 @@
                     </div>
 
                     <div class="form-group">
+                        <label asp-for="Email" class="required">Email</label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
                         <label for="" class="required">Role</label>
-                        <select asp-for="RoleId" class="form-control" asp-items="Model.Roles">
-                            <option value="">-- Select Role --</option>
+                        <select asp-for="RoleId" class="form-control" asp-items="Model.RolesOptions"Options>
+s                            <option value="">-- Select Role --</option>
                         </select>
                         <span asp-validation-for="RoleId" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
                         <label for="" class="required">Status</label>
-                        <select asp-for="StatusId" class="form-control" asp-items="Model.Statuses">
+                        <select asp-for="StatusId" class="form-control" asp-items="Model.StatusesOptions">
                             <option value="">-- Select Status --</option>
                         </select>
                         <span asp-validation-for="StatusId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Password" class="required">Password</label>
+                        <input type="password" asp-for="Password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
 
                 </div>
