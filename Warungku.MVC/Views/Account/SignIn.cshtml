@@ -1,4 +1,5 @@
-﻿@{
+﻿@model Warungku.Core.Domain.DTOs.LoginRequest
+@{
     Layout = null;
 }
 <!DOCTYPE html>
@@ -17,18 +18,18 @@
             <div class="d-flex justify-content-center align-items-center" style="margin-bottom:10px;">
                 <img src="~/assets/img/logo.png" width="50%" />
             </div>
-            <form>
+            <form asp-action="Signin" asp-controller="Account" method="post">
                 <div class="form-group">
                     <label class="text-white">Username or Email Address</label>
-                    <input type="email" class="form-control" placeholder="Enter your Username or Email Address" required>
+                    <input type="text" class="form-control" asp-for="Username" placeholder="Enter your Username or Email Address" required>
                 </div>
                 <div class="form-group">
                     <label class="text-white">Password</label>
-                    <input type="password" class="form-control" placeholder="Enter your Password" required>
+                    <input type="password" asp-for="Password" class="form-control" placeholder="Enter your Password" required>
                 </div>
                 <button type="submit" class="btn btn-success btn-block">Sign in</button>
                 <div class="text-center mt-3">
-                    <a class="text-white" href="register.html">Don't have an Account? Register</a>
+                    <a class="text-white" href="@Url.Action("Register","Account")">Don't have an Account? Register</a>
                 </div>
             </form>
         </div>

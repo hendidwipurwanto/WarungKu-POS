@@ -1,26 +1,33 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Drawing.Text;
-using Warungku.MVC.Models;
+using System.Threading.Tasks;
+using Warungku.Core.Application.Interfaces;
+using Warungku.Core.Application.Services;
+using Warungku.Core.Domain.DTOs;
 
 namespace Warungku.MVC.Controllers
 {
     public class UserManagementController : Controller
     {
-        private static readonly string[] Status = { "Active", "Inactive", "Draft" };
-        private static readonly Random _statusRandom = new Random();
-        private static readonly string[] Roles = { "Admin", "Staff", "Manager" };
-        private static readonly Random _roleRandom = new Random();
-        // GET: UserManagementController
-        public ActionResult Index()
+        private IAccountService _accountService;
+        public UserManagementController(IAccountService accountService)
         {
+            _accountService = accountService;
+        }
+        
+        public async Task<ActionResult> Index()
+        {
+            ViewBag.currentUser = User.Identity.Name;
+            var user = await _accountService.GetAllAsync();
             return View();
         }
 
         [HttpPost]
-        public JsonResult GetUsers()
+        public async Task<JsonResult> GetUsers()
         {
             var draw = Request.Form["draw"].FirstOrDefault();
             var start = Request.Form["start"].FirstOrDefault();
@@ -30,25 +37,13 @@ namespace Warungku.MVC.Controllers
             int pageSize = length != null ? Convert.ToInt32(length) : 0;
             int skip = start != null ? Convert.ToInt32(start) : 0;
 
-            var allProducts = new List<UserResponse>();
-            for (int i = 1; i <= 1000; i++)
-            {
-                allProducts.Add(new UserResponse
-                {
-                    Id = i,
-                     Email ="user"+i+"@mail.com",
-                       RoleName = Roles[_roleRandom.Next(Roles.Length)],
-                        StatusName = Status[_statusRandom.Next(Status.Length)],
-                    UserName ="user"+i,
-                       LastLogin= DateTime.Now.ToString("dd/MM/yyyy")
-                });
-            }
-           
+            var allUsers = await _accountService.GetAllAsync();
+            var totalRecordBeforeFiltered = allUsers.Count();
 
-             
+
             if (!string.IsNullOrEmpty(searchValue))
             {
-                allProducts = allProducts.Where(p =>
+                allUsers = allUsers.Where(p =>
                     p.Email.ToLower().Contains(searchValue) ||
                     p.RoleName.ToLower().Contains(searchValue) ||
                     p.StatusName.ToLower().Contains(searchValue) ||
@@ -57,23 +52,19 @@ namespace Warungku.MVC.Controllers
                 ).ToList();
             }
 
-            int totalRecords = allProducts.Count;
-            var data = allProducts.Skip(skip).Take(pageSize).ToList();
+            int totalRecords = allUsers.Count();
+            var data = allUsers.Skip(skip).Take(pageSize).ToList();
 
             return Json(new
             {
                 draw = draw,
-                recordsTotal = 1000, // total before filtered
-                recordsFiltered = totalRecords, // total after filtered
+                recordsTotal = totalRecordBeforeFiltered,
+                recordsFiltered = totalRecords, 
                 data = data
             });
         }
 
-        // GET: UserManagementController/Details/5
-        public ActionResult Details(int id)
-        {
-            return PartialView("_detailModal", new UserResponse() { Email="user@mail.com", RoleName="Manager", StatusName="Active"});
-        }
+       
 
         [HttpGet]
         public ActionResult Create()
@@ -92,20 +83,22 @@ namespace Warungku.MVC.Controllers
             };
 
             var model = new UserRequest();
-            model.Roles = new List<SelectListItem>();
-            model.Statuses = new List<SelectListItem>();
-            model.Roles.AddRange(roles);
-            model.Statuses.AddRange(statuses);
+            model.RolesOptions = new List<SelectListItem>();
+            model.StatusesOptions = new List<SelectListItem>();
+            model.RolesOptions.AddRange(roles);
+            model.StatusesOptions.AddRange(statuses);
 
             return PartialView("_addModal", model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(UserRequest request)
+        public async Task<ActionResult> Create(UserRequest request)
         {
             if (ModelState.IsValid)
-            {
+            { var newUser = new RegisterRequest() { Username = request.UserName, Email=request.Email, 
+                Password=request.Password, RoleId=request.RoleId, StatusId=request.StatusId  };
+                var result = await _accountService.RegisterAsync(newUser);
 
                 return Json(new { success = true, message = "Data Saved Successfully!" });
             }
@@ -115,7 +108,7 @@ namespace Warungku.MVC.Controllers
         }
 
         [HttpGet]
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(string id)
         {
             var roles = new List<SelectListItem>
             {
@@ -130,30 +123,91 @@ namespace Warungku.MVC.Controllers
                 new SelectListItem { Value="3", Text="Draft" }
             };
 
-            return PartialView("_editModal", new UserResponse() { UserName = "testing", RoleId = 3, StatusId = 3, RoleOptions = roles, StatusOptions = statuses });
+            var model = await _accountService.GetUserById(id);
+
+            model.Id = id;
+            model.RolesOptions = new List<SelectListItem>();
+            model.StatusesOptions = new List<SelectListItem>();
+            model.RolesOptions.AddRange(roles);
+            model.StatusesOptions.AddRange(statuses);
+
+            return PartialView("_editModal", model);
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, UserRequest request)
+        public async Task<ActionResult> Edit(string  id, UserRequest request)
         {
             if (ModelState.IsValid)
             {
-
+                var res = await _accountService.UpdateUserAsync(request);
                 return Json(new { success = true, message = "Data Saved Successfully!" });
             }
-            var response = new UserResponse() { UserName = request.UserName, RoleId=3, StatusId=3, };
+           
 
 
 
-            return PartialView("_editModal", response);
+            return PartialView("_editModal", request);
         }
 
         [HttpPost]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(string id)
         {
-            return Ok();
+
+            var result = await _accountService.DeleteUserByIdAsync(id);
+
+           
+
+            return Json(new { success = result, message = result == true ? "Data Deleted Successfully!": "Data Deleted Un-Successfully!" });
+
+        }
+
+
+        [HttpGet]
+        public async Task<ActionResult> Details(string id)
+        {
+            var response = await _accountService.GetUserById(id);
+
+            return PartialView("_detailModal", new UserResponse()
+            {
+                Email = response.Email,
+                UserName = response.UserName,
+                RoleName = GetRoleName(response.RoleId),
+                StatusName = GetStatusName(response.StatusId)
+            });
+        }
+
+        private string GetStatusName(int? statusId)
+        {
+            if (statusId == 1)
+            {
+                return "Active";
+            }
+            else if (statusId == 2)
+            {
+                return "InActive";
+            }
+            else
+            {
+                return "Draft";
+            }
+
+        }
+        private string GetRoleName(int? roleId)
+        {
+            if (roleId == 1)
+            {
+                return "Manager";
+            }
+            else if (roleId == 2)
+            {
+                return "Admin";
+            }
+            else
+            {
+                return "Staff";
+            }
 
         }
     }

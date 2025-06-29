@@ -1,10 +1,10 @@
-﻿@model CategoryRequest
+﻿@model Warungku.Core.Domain.DTOs.CategoryRequest
 
 <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
 
-            <form asp-action="Create" id="addForm" autocomplete="off">
+            <form asp-action="Create" asp-controller="Category" method="post" id="addForm" autocomplete="off">
                 @Html.AntiForgeryToken()
 
                 <div class="modal-header bg-primary text-white">

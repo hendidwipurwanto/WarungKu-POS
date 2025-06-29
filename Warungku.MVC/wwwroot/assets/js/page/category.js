@@ -58,7 +58,7 @@ $(function () {
             console.log('------------------------------------');
             console.log(data);
             $('#modal-add-placeholder').html(data);
-            // Tampilkan modal
+
             $('#addModal').modal('show');
             $('#cancelBtn').on('click', function () {
                 $('#addModal').modal('hide');
@@ -82,8 +82,18 @@ $(function () {
                 success: function (response) {
                     if (response.success) {                       
                         $('#addModal').modal('hide');
-                        alert(response.message);
-                        location.reload();
+                        Swal.fire({
+                            title: 'Success!',
+                            text: response.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+
+                                location.reload();
+                            }
+                        });
+                       
                     } else {
                         $('#modal-add-placeholder').html(response);
                         $('#addModal').modal('show');
@@ -115,9 +125,9 @@ $(function () {
 
     $('#grid').on('click', '.btn-edit', function () {
         let id = $(this).data('id');
-        $.get('/Category/Edit/id', function (data) {
-            // Masukkan HTML yang didapat ke dalam placeholder
-            console.log('------------------------------------');
+
+        $.get('/Category/Edit/' + id, function (data) {
+           console.log('------------------------------------');
             console.log(data);
             $('#modal-edit-placeholder').html(data);
             // Tampilkan modal
@@ -144,8 +154,19 @@ $(function () {
                 success: function (response) {
                     if (response.success) {
                         $('#editModal').modal('hide');
-                        alert(response.message);
-                        location.reload();
+                        Swal.fire({
+                            title: 'Success!',
+                            text: response.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                               
+                                location.reload();
+                            }
+                        });
+
+                       
                     } else {
                         $('#modal-edit-placeholder').html(response);
                         $('#editModal').modal('show');
@@ -177,7 +198,7 @@ $(function () {
 
     $('#grid').on('click', '.btn-info', function () {
         let id = $(this).data('id');
-        $.get('/Category/Details/id', function (data) {
+        $.get('/Category/Details/'+ id, function (data) {
             // Masukkan HTML yang didapat ke dalam placeholder
             console.log('------------------------------------');
             console.log(data);
@@ -217,13 +238,23 @@ $(function () {
                     url: '/Category/Delete/' + id,
                     type: 'POST',
                     success: function (response) {
-                        Swal.fire(
-                            'Deleted!',
-                            'Your record has been deleted.',
-                            'success'
-                        ).then(() => {
-                            location.reload(); // atau update tabel pakai JS
-                        });
+                        if (response.success) {
+                            Swal.fire(
+                                'Deleted!',
+                                response.message,
+                                'success'
+                            ).then(() => {
+                                location.reload();
+                            });
+                        }
+                        else {
+                            Swal.fire(
+                                'Error!',
+                                'Something went wrong.',
+                                'error'
+                            );
+                        }
+                        
                     },
                     error: function () {
                         Swal.fire(

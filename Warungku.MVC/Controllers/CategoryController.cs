@@ -1,23 +1,30 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
-using Warungku.MVC.Models;
+using System.Threading.Tasks;
+using Warungku.Core.Application.Interfaces;
+using Warungku.Core.Domain.DTOs;
+
 
 namespace Warungku.MVC.Controllers
 {
+    [Authorize(Roles = "Admin,Manager")]
     public class CategoryController : Controller
     {
-        private static readonly string[] Status = { "Active", "Inactive", "Draft" };
-        private static readonly Random _random = new Random();
-        // GET: CategoriesController
-        public ActionResult Index()
+        private readonly ICategoryService _categoryService;
+        public CategoryController(ICategoryService categoryService)
         {
-      
+            _categoryService = categoryService;
+        }
+        public async Task<IActionResult> Index()
+        {
+            ViewBag.currentUser = User.Identity.Name;
             return View();
         }
 
         [HttpPost]
-        public JsonResult GetCategories()
+        public async Task<JsonResult> GetCategories()
         {
             var draw = Request.Form["draw"].FirstOrDefault();
             var start = Request.Form["start"].FirstOrDefault();
@@ -27,18 +34,8 @@ namespace Warungku.MVC.Controllers
             int pageSize = length != null && Convert.ToInt32(length) > 0 ? Convert.ToInt32(length) : 10;
             int skip = start != null ? Convert.ToInt32(start) : 0;
 
-            var allCategories = new List<CategoryResponse>();
-            for (int i = 1; i <= 1000; i++)
-            {
-                allCategories.Add(new CategoryResponse
-                {
-                    Id = i,
-                    Name = $"Category {i}",
-                    Description = " this is description-" + i,
-                    Status = Status[_random.Next(Status.Length)]
-                });
-            }
-
+            var allCategories = await _categoryService.GetAllAsync();
+            var totalRecordBeforeFiltered = allCategories.Count();
 
             if (!string.IsNullOrEmpty(searchValue))
             {
@@ -49,22 +46,25 @@ namespace Warungku.MVC.Controllers
                 ).ToList();
             }
 
-            int totalRecords = allCategories.Count;
+            int totalRecordAfterFiltered = allCategories.Count();
             var data = allCategories.Skip(skip).Take(pageSize).ToList();
 
             return Json(new
             {
                 draw = draw,
-                recordsTotal = 1000, // total before filtered
-                recordsFiltered = totalRecords, // total after filtered
+                recordsTotal = totalRecordBeforeFiltered, 
+                recordsFiltered = totalRecordAfterFiltered, 
                 data = data
             });
         }
 
        
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int id)
         {
-            return PartialView("_detailModal", new CategoryResponse());
+             var response = await _categoryService.GetByIdAsync(id);
+
+
+            return PartialView("_detailModal", response);
         }
 
         // GET: CategoriesController/Create
@@ -77,31 +77,41 @@ namespace Warungku.MVC.Controllers
         // POST: CategoriesController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(CategoryRequest request)
+        public async Task<IActionResult> Create(CategoryRequest request)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-
-                return Json(new { success = true, message = "Data Saved Successfully!" });
+                return PartialView("_addModal", request);
+            }
+            var result = await _categoryService.CreateAsync(request);
+            if (result == null)
+            {
+                ModelState.AddModelError("", "Failed to create category");
+                return View(request);
             }
 
+            return Json(new { success = true, message = "Data added Successfully!" });
 
-            return PartialView("_addModal", request);
+
         }
 
         
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            return PartialView("_editModal", new CategoryResponse() { Name="testing", Description="wakaka", Status="Active"});
+            var response = await _categoryService.GetByIdAsync(id);
+
+            return PartialView("_editModal", response);
         }
 
      
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, CategoryRequest request)
+        public async Task<ActionResult> Edit(int id, CategoryRequest request)
         {
             if (ModelState.IsValid)
             {
+                var model = await _categoryService.UpdateAsync(id, request);
+
 
                 return Json(new { success = true, message = "Data Saved Successfully!" });
             }
@@ -113,9 +123,16 @@ namespace Warungku.MVC.Controllers
         }
 
         [HttpPost]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            return Ok();
+            var model = await _categoryService.GetByIdAsync(id);
+            if(model != null)
+            {
+                var response = await _categoryService.DeleteAsync(id);
+                return Json(new { success = response, message = "Data Deleted Successfully!" });
+            }
+
+            return Json(new { success = true, message = "Data Deleted Successfully!" });
         }
     }
 }

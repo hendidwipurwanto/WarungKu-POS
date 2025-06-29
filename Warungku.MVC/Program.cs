@@ -1,22 +1,21 @@
 ﻿using System.Text.Json;
+using Warungku.MVC.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Tambahkan controller + JSON camelCase
+
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
     });
 
-builder.Services.AddAuthentication(); 
+builder.Services.AddAuthentication();
+
+builder.Services.AddApplicationServices(builder.Configuration);
 
 var app = builder.Build();
 
-
-app.UseExceptionHandler("/Error/500");
-
-app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
 if (!app.Environment.IsDevelopment())
 {
@@ -33,6 +32,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Dashboard}/{action=Index}/{id?}");
+    pattern: "{controller=Account}/{action=Register}/{id?}");
 
 app.Run();

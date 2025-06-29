@@ -1,20 +1,31 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Warungku.MVC.Models;
+using System.Threading.Tasks;
+using Warungku.Core.Application.Interfaces;
+using Warungku.Core.Domain.DTOs;
 
 namespace Warungku.MVC.Controllers
 {
+    [Authorize(Roles = "Admin,Manager")]
     public class ProductController : Controller
     {
-        // GET: ProductController
+        private readonly IProductService _productService;
+        private readonly ICategoryService _categoryService;
+        public ProductController(IProductService productService, ICategoryService categoryService)
+        {
+            _productService = productService;
+            _categoryService = categoryService;
+        }
         public ActionResult Index()
         {
+            ViewBag.currentUser = User.Identity.Name;
             return View();
         }
 
         [HttpPost]
-        public JsonResult GetProducts()
+        public async Task<JsonResult> GetProducts()
         {
             var draw = Request.Form["draw"].FirstOrDefault();
             var start = Request.Form["start"].FirstOrDefault();
@@ -24,20 +35,10 @@ namespace Warungku.MVC.Controllers
             int pageSize = length != null ? Convert.ToInt32(length) : 0;
             int skip = start != null ? Convert.ToInt32(start) : 0;
 
-            var allProducts = new List<ProductResponse>();
-            for (int i = 1; i <= 1000; i++)
-            {
-                allProducts.Add(new ProductResponse
-                {
-                    Id = i,
-                    Name = $"Product {i}",
-                    Stock = 10 + i,
-                    Price = 10000 + (i * 100),
-                    CategoryName = "Food"
-                });
-            }
+            var allProducts = await _productService.GetAllAsync();
+            var totalRecordBeforeFiltered = allProducts.Count();
 
-       
+
             if (!string.IsNullOrEmpty(searchValue))
             {
                 allProducts = allProducts.Where(p =>
@@ -48,35 +49,42 @@ namespace Warungku.MVC.Controllers
                 ).ToList();
             }
 
-            int totalRecords = allProducts.Count;
+            int totalRecordAfterFiltered = allProducts.Count();
             var data = allProducts.Skip(skip).Take(pageSize).ToList();
 
             return Json(new
             {
                 draw = draw,
-                recordsTotal = 1000, // total before filtered
-                recordsFiltered = totalRecords, // total after filtered
+                recordsTotal = totalRecordBeforeFiltered,
+                recordsFiltered = totalRecordAfterFiltered,
                 data = data
             });
         }
 
 
 
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int id)
         {
-            return PartialView("_detailModal", new ProductResponse() { CategoryName="test", Name="testing", Price=1000, Stock=20});
+            var response = await _productService.GetByIdAsync(id);
+            return PartialView("_detailModal", response);
+        }
+
+        private async Task<List<SelectListItem>> PopulateCategory()
+        {
+            var categoryList = await _categoryService.GetAllAsync();
+            var categories = new List<SelectListItem>();
+            foreach (var item in categoryList)
+            {
+                var selectListItem = new SelectListItem { Value = item.Id.ToString(), Text = item.Name };
+                categories.Add(selectListItem);
+            }
+            return categories;
         }
 
         [HttpGet]
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            var categories = new List<SelectListItem>
-            {
-                new SelectListItem { Value = "1", Text = "Food" },
-                new SelectListItem { Value = "2", Text = "Beverage" },
-                 new SelectListItem { Value = "3", Text = "Snack" }
-            };
-            
+            var categories = await PopulateCategory();
             var model = new ProductRequest();
            model.Categories = new List<SelectListItem>();
             model.Categories.AddRange(categories);
@@ -84,40 +92,42 @@ namespace Warungku.MVC.Controllers
              return PartialView("_addModal", model);
         }
 
-        // POST: CategoriesController/Create
+      
         [HttpPost]
-[ValidateAntiForgeryToken]
-public ActionResult Create(ProductRequest request)
-{
-    if (ModelState.IsValid)
-    {
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Create(ProductRequest request)
+        {
+        if (ModelState.IsValid)
+        {
+                var response = await _productService.CreateAsync(request);
+
 
         return Json(new { success = true, message = "Data Saved Successfully!" });
-    }
+        }
 
 
-    return PartialView("_addModal", request);
+        return PartialView("_addModal", request);
 }
 
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            var categories = new List<SelectListItem>
-            {
-                new SelectListItem { Value = "1", Text = "Food" },
-                new SelectListItem { Value = "2", Text = "Beverage" },
-                 new SelectListItem { Value = "3", Text = "Snack" }
-            };
+            var categories = await PopulateCategory();
+            var response = await _productService.GetByIdAsync(id);
+            response.Categories = new List<SelectListItem>();
+            response.Categories.AddRange(categories);
+            
 
-            return PartialView("_editModal", new ProductResponse() { Name = "testing", Price = 1000, Stock = 30 , CategoryId= 3, Categories=categories});
+            return PartialView("_editModal", response);
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, ProductRequest request)
+        public async Task<ActionResult> Edit(int id, ProductRequest request)
         {
             if (ModelState.IsValid)
             {
+                var model = await _productService.UpdateAsync(id, request);
 
                 return Json(new { success = true, message = "Data Saved Successfully!" });
             }
@@ -130,9 +140,16 @@ public ActionResult Create(ProductRequest request)
 
 
         [HttpPost]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            return Ok();
+            var model = await _productService.GetByIdAsync(id);
+            if (model != null)
+            {
+                var response = await _productService.DeleteAsync(id);
+                return Json(new { success = response, message = "Data Deleted Successfully!" });
+            }
+
+            return Json(new { success = true, message = "Data Deleted Successfully!" });
         }
 
         

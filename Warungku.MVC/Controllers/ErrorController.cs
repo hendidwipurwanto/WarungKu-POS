@@ -4,22 +4,21 @@ namespace Warungku.MVC.Controllers
 {
     public class ErrorController : Controller
     {
-        [Route("Error/404")]
-        public IActionResult Error404()
+        [Route("Error/{statusCode}")]
+        public IActionResult HttpStatusCodeHandler(int statusCode)
         {
-            return View("Error404");
+            if (statusCode == 403)
+                return View("403");
+            else if (statusCode == 404)
+                return View("404");
+            else
+                return View("500"); // fallback
         }
 
-        [Route("Error/403")]
-        public IActionResult Error403()
+        [Route("Error")]
+        public IActionResult GeneralError()
         {
-            return View("Error403");
-        }
-
-        [Route("Error/500")]
-        public IActionResult Error500()
-        {
-            return View("Error500");
+            return View("500");
         }
     }
 
