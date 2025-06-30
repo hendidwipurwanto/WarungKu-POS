@@ -1,0 +1,63 @@
+﻿@model Warungku.Core.Domain.DTOs.TransactionRequest
+
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <form asp-action="CreateTransaction" asp-controller="PointOfSales" method="post" id="addForm" autocomplete="off">
+                @Html.AntiForgeryToken()
+
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="addModalLabel">Cash Payment</h5>
+                    <button id="xClose" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <form asp-action="CreateTransaction" method="post">
+                        <input asp-for="Date" class="form-control" placeholder="Date" id="dateModal" />
+                        <input asp-for="User" class="form-control" placeholder="user" id="userModal" />
+                        <input asp-for="Total" class="form-control" placeholder="total" id="totalModal"/>
+                        <input asp-for="Discount" class="form-control" placeholder="discount" id="discountModal" />
+                        <input asp-for="Voucher" class="form-control" placeholder="voucher" id="voucherModal" />
+                        <input asp-for="GrandTotal" class="form-control" placeholder="grandtotal" id="grandTotalModal" />
+                        <div class="form-group row">
+                            <label for="GrandTotal" class="col-sm-4 col-form-label">Grand Total</label>
+                            <div class="col-sm-8">
+                                <input style="text-align:right;" type="text" class="form-control" id="grandTotalCash" value="" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="GrandTotal" class="col-sm-4 col-form-label">Grand Total</label>
+                            <div class="col-sm-8">
+                                <input style="text-align:right;" type="text" class="form-control" id="grandTotalCash" value="" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="Cash" class="col-sm-4 col-form-label">Cash</label>
+                            <div class="col-sm-8">
+                                <input style="text-align:right;" type="text" class="form-control" id="cash">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="Change" class="col-sm-4 col-form-label">Change</label>
+                            <div class="col-sm-8">
+                                <input style="text-align:right;" type="text" class="form-control" id="changeCash" value="" readonly>
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+
+                            <button type="submit" class="btn btn-primary">Ok</button>
+                            <button id="cancelBtn" type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
+
+                </div>
+
+                
+            </form>
+        </div>
+    </div>
+</div>

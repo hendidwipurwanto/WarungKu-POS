@@ -1,19 +1,41 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Threading.Tasks;
+using Warungku.Core.Application.Interfaces;
+using Warungku.Core.Application.Services;
+using Warungku.Core.Domain.DTOs;
 using Warungku.MVC.Models;
 
 namespace Warungku.MVC.Controllers
 {
     public class PointOfSalesController : Controller
     {
-        // GET: PointOfSalesController
-        public ActionResult Index()
+        private readonly IProductService _productService;
+        private readonly IPointOfSaleService _pointOfSaleService;
+        private readonly ITransactionService _transactionService;
+        public PointOfSalesController(IProductService productService, IPointOfSaleService pointOfSaleService,ITransactionService transactionService)
         {
+            _productService = productService;
+            _pointOfSaleService = pointOfSaleService;
+            _transactionService = transactionService;
+        }
+        public async Task<ActionResult> Index()
+        {
+            var model = new PosRequest();
             ViewBag.currentUser = User.Identity.Name;
-            return View();
+            var productList = await _productService.GetAllAsync();
+            model.Products = new List<SelectListItem>();
+            foreach (var item in productList)
+            {
+                var temp = new SelectListItem() { Value = item.Id.ToString(), Text = item.Name };
+                model.Products.Add(temp);
+            }
+          
+            return View(model);
         }
         [HttpPost]
-        public JsonResult GetPoses()
+        public async Task<JsonResult> GetPoses()
         {
             var draw = Request.Form["draw"].FirstOrDefault();
             var start = Request.Form["start"].FirstOrDefault();
@@ -23,17 +45,8 @@ namespace Warungku.MVC.Controllers
             int pageSize = length != null && Convert.ToInt32(length) > 0 ? Convert.ToInt32(length) : 10;
             int skip = start != null ? Convert.ToInt32(start) : 0;
 
-            var allPoses = new List<PosView>();
-            for (int i = 1; i <= 1000; i++)
-            {
-                allPoses.Add(new PosView
-                {
-                    Id = i,
-                    Item= "Indomie-"+i,
-                      Quantity= i,
-                       Subtotal = 10000 + (i * 100)
-                });
-            }
+            var allPoses = await _pointOfSaleService.GetAllAsync();
+            var totalRecordBeforeFiltered = allPoses.Count();
 
 
             if (!string.IsNullOrEmpty(searchValue))
@@ -45,14 +58,14 @@ namespace Warungku.MVC.Controllers
                 ).ToList();
             }
 
-            int totalRecords = allPoses.Count;
+            int totalRecordAfterFiltered = allPoses.Count();
             var data = allPoses.Skip(skip).Take(pageSize).ToList();
 
             return Json(new
             {
                 draw = draw,
-                recordsTotal = 1000, // total before filtered
-                recordsFiltered = totalRecords, // total after filtered
+                recordsTotal = totalRecordBeforeFiltered, // total before filtered
+                recordsFiltered = totalRecordAfterFiltered, // total after filtered
                 data = data
             });
         }
@@ -64,24 +77,27 @@ namespace Warungku.MVC.Controllers
         }
 
         // GET: PointOfSalesController/Create
-        public ActionResult Create()
+        public ActionResult CreateTransaction()
         {
-            return View();
+            return PartialView("_addModal", new TransactionRequest());
         }
 
         // POST: PointOfSalesController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<ActionResult> CreateTransaction(TransactionRequest request)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            request.User = User.Identity.Name;
+            request.Date = DateTime.Now;
+           
+                var result = await _transactionService.CreateAsync(request);
+
+            // return PartialView("_addModal", new TransactionRequest());
+
+            //}
+
+            return RedirectToAction("index");
+            
         }
 
         // GET: PointOfSalesController/Edit/5

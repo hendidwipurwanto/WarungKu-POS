@@ -1,4 +1,6 @@
-﻿
+﻿@model Warungku.Core.Domain.DTOs.PosRequest
+
+
 @{
     ViewData["Title"] = "Point of Sales - WarungKu POS";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -20,7 +22,7 @@
                 <div class="form-group row">
                     <label for="customerName" class="col-sm-6 col-form-label">Customer Name</label>
                     <div class="col-sm-6">
-                        <input type="text" class="form-control" id="customerName" value="No Name">
+                        <input type="text" class="form-control" id="customerName" value="">
                     </div>
                 </div>
             </form>
@@ -31,14 +33,14 @@
                 <div class="form-group row">
                     <label for="discount" class="col-sm-6 col-form-label">Discount (%)</label>
                     <div class="col-sm-6">
-                        <input type="text" class="form-control" id="discount" value="10" style="text-align:right;">
+                        <input type="text" class="form-control" id="discount" value="0" style="text-align:right;">
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <label for="voucher" class="col-sm-6 col-form-label">Voucher (Rp)</label>
                     <div class="col-sm-6">
-                        <input type="text" class="form-control" id="voucher" value="250" style="text-align:right;">
+                        <input type="text" class="form-control" id="voucher" value="0" style="text-align:right;">
                     </div>
                 </div>
             </form>
@@ -50,19 +52,19 @@
     <div class="row text-center">
         <div class="col-md-3">
             <h4>Total</h4>
-            <h3 id="totalAmount">11.000</h3>
+            <h3 id="totalText"></h3>
         </div>
         <div class="col-md-3">
             <h4>Discount</h4>
-            <h3 class="discount" id="discountAmount">-1.100</h3>
+            <h3 class="discount" id="discountText">0</h3>
         </div>
         <div class="col-md-3">
             <h4>Voucher</h4>
-            <h3 class="voucher" id="voucherAmount">-250</h3>
+            <h3 class="voucher" id="voucherText">0</h3>
         </div>
         <div class="col-md-3">
             <h4>Grand Total</h4>
-            <h3 class="grand-total" id="grandTotal">9.650</h3>
+            <h3 class="grand-total" id="grandTotalText">0</h3>
         </div>
     </div>
 
@@ -71,7 +73,7 @@
             <h5>Payment</h5>
         </div>
         <div class="payment-buttons">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#cashPaymentModal">
+            <button type="button" id="cashPaymentModalBtn" class="btn btn-primary">
                 Cash
             </button>
 
@@ -84,23 +86,27 @@
 
 <!-- Add Item Section -->
 <div class="add-item-section">
+    <form asp-action="Create" asp-controller="PointOfSales" method="post">
+        @Html.AntiForgeryToken()
     <div class="row align-items-end">
         <div class="col-md-3">
-            <input type="text" class="form-control" placeholder="Item Code">
+            <select asp-for="ProductId" class="form-control" asp-items="Model.Products">
+                <option value="">-- Select Item --</option>
+            </select>
+           
         </div>
         <div class="col-md-2">
-            <input type="text" class="form-control" placeholder="Quantity">
+                <input asp-for="Quantity" type="text" class="form-control" placeholder="Quantity" class="form-control" />
+           
         </div>
         <div class="col-md-2">
-            <input type="text" class="form-control" placeholder="Price">
-        </div>
-        <div class="col-md-2">
-            <input type="text" class="form-control" placeholder="Subtotal" readonly>
+                <input asp-for="Price" type="text" class="form-control" placeholder="Price" class="form-control" />
         </div>
         <div class="col-md-3">
-            <button class="w-100 btn btn-add  btn-secondary"> Add </button>
+                <button type="button" id="addBtn" class="w-100 btn btn-add  btn-secondary"> Add </button>
         </div>
     </div>
+</form>
 </div>
 
 <!-- Items Table -->
@@ -109,7 +115,6 @@
         <table id="grid" class="table table-bordered pos-table mb-0">
             <thead>
                 <tr>
-                    <th>Id</th>
                     <th>Item</th>
                     <th>Quantity</th>
                     <th>Price</th>
@@ -131,24 +136,29 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form>
+                <form asp-action="CreateTransaction" method="post" >
                     <div class="form-group row">
                         <label for="GrandTotal" class="col-sm-4 col-form-label">Grand Total</label>
                         <div class="col-sm-8">
-                            <input style="text-align:right;" type="text" class="form-control" id="Cash" value="9650" readonly>
-
+                            <input style="text-align:right;" type="text" class="form-control" id="grandTotalCash" value="9650" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="GrandTotal" class="col-sm-4 col-form-label">Grand Total</label>
+                        <div class="col-sm-8">
+                            <input style="text-align:right;" type="text" class="form-control" id="grandTotalCash" value="9650" readonly>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="Cash" class="col-sm-4 col-form-label">Cash</label>
                         <div class="col-sm-8">
-                            <input style="text-align:right;" type="text" class="form-control" id="Cash">
+                            <input style="text-align:right;" type="text" class="form-control" id="cash">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="Change" class="col-sm-4 col-form-label">Change</label>
                         <div class="col-sm-8">
-                            <input style="text-align:right;" type="text" class="form-control" id="Cash" value="350" readonly>
+                            <input style="text-align:right;" type="text" class="form-control" id="changeCash" value="" readonly>
 
                         </div>
                     </div>
@@ -162,7 +172,7 @@
     </div>
 </div>
 <!-- End Modal Cash -->
-<!-- start Modal Cash -->
+<!-- start Modal NON Cash -->
 <div class="modal fade" id="non_cashPaymentModal" tabindex="-1" aria-labelledby="non_cashPaymentModal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -177,7 +187,7 @@
                     <div class="form-group row">
                         <label for="GrandTotal" class="col-sm-4 col-form-label">Grand Total</label>
                         <div class="col-sm-8">
-                            <input style="text-align:right;" type="text" class="form-control" id="GrandTotal" value="9650" readonly>
+                            <input style="text-align:right;" type="text" class="form-control" id="GrandTotalNon" value="9650" readonly>
 
                         </div>
                     </div>
@@ -196,6 +206,9 @@
         </div>
     </div>
 </div>
+</div>
+<div id="modal-add-placeholder"></div>
+
 <!-- End Modal Cash -->
 @section Scripts {
     <script src="~/assets/js/page/pos.js"></script>

@@ -1,14 +1,21 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Warungku.MVC.Models;
+using System.Threading.Tasks;
+using Warungku.Core.Application.Interfaces;
+using Warungku.Core.Application.Services;
+using Warungku.Core.Domain.DTOs;
 
 namespace Warungku.MVC.Controllers
 {
 
     public class ListTransactionController : Controller
     {
-        // GET: ListTransactionController
+        private readonly ITransactionService _transactionService;
+        public ListTransactionController(ITransactionService transactionService)
+        {
+            _transactionService = transactionService;
+        }
         public ActionResult Index()
         {
             ViewBag.currentUser = User.Identity.Name;
@@ -16,7 +23,7 @@ namespace Warungku.MVC.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetTransactions()
+        public async Task<JsonResult> GetTransactions()
         {
             var draw = Request.Form["draw"].FirstOrDefault();
             var start = Request.Form["start"].FirstOrDefault();
@@ -27,21 +34,8 @@ namespace Warungku.MVC.Controllers
 
             int skip = start != null ? Convert.ToInt32(start) : 0;
 
-            var allTransactions = new List<TransactionResponse>();
-            for (int i = 1; i <= 1000; i++)
-            {
-                allTransactions.Add(new TransactionResponse
-                {
-                    Id = i, 
-                    Date = DateTime.Now.ToString("dd-MMMM-yyyy"),
-                     Discount = i+5,
-                      GrandTotal= (10 * i),
-                       Total = 10000 + (i * 100),
-                        User= "Staff-"+i, 
-                    Voucher = 10+ i,                   
-                });
-            }
-
+            var allTransactions = await _transactionService.GetAllAsync();
+            var totalRecordBeforeFiltered = allTransactions.Count();
 
             if (!string.IsNullOrEmpty(searchValue))
             {
@@ -54,14 +48,14 @@ namespace Warungku.MVC.Controllers
                 ).ToList();
             }
 
-            int totalRecords = allTransactions.Count;
+            int totalRecordAfterFiltered = allTransactions.Count();
             var data = allTransactions.Skip(skip).Take(pageSize).ToList();
 
             return Json(new
             {
                 draw = draw,
-                recordsTotal = 1000, // total before filtered
-                recordsFiltered = totalRecords, // total after filtered
+                recordsTotal = totalRecordBeforeFiltered,
+                recordsFiltered = totalRecordAfterFiltered,
                 data = data
             });
         }

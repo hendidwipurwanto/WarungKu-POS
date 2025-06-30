@@ -18,7 +18,13 @@ $(document).ready(function () {
             { data: 'date', className: 'text-center' },
             { data: 'user' },
             { data: 'total', className: 'text-center' },
-            { data: 'discount', className: 'text-center' },
+            {
+                data: 'discount',
+                render: function (data, type, row) {
+                    return data + '%';
+                },
+                className: 'text-center'
+            },
             { data: 'voucher', className: 'text-center' },
             { data: 'grandTotal', defaultContent: '', className: 'text-center' }
         ]

@@ -37,6 +37,9 @@ namespace Warungku.MVC.Extension
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IPointOfSaleService, PointOfSaleService>();
+            services.AddScoped<ITransactionService, TransactionService>();
+
 
             // Session
             services.AddDistributedMemoryCache();

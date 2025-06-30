@@ -1,16 +1,38 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using Warungku.Core.Application.Interfaces;
+using Warungku.Core.Domain.Entities;
 
 namespace Warungku.MVC.Controllers
 {
     [Authorize]
     public class DashboardController : Controller
     {
-
-        public ActionResult Index()
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IProductService _productService;
+        private readonly ICategoryService _categoryService;
+        private readonly ITransactionService _transactionService;
+        public DashboardController(UserManager<ApplicationUser> userManager, IProductService productService, ICategoryService categoryService, ITransactionService transactionService)
         {
-
+            _userManager = userManager;
+            _productService = productService;
+            _categoryService = categoryService;
+            _categoryService = categoryService;
+            _transactionService = transactionService;
+        }
+        public async Task<ActionResult> Index()
+        {
+            var transactions = await _transactionService.GetAllAsync();
+            int totalUsers = _userManager.Users.Count();
+            var products = await _productService.GetAllAsync();
+            var category = await _categoryService.GetAllAsync();
+            ViewBag.totalSales = transactions.Sum(s => s.GrandTotal);
+            ViewBag.totalCategory = category.Count();
+            ViewBag.TotalProduct = products.Count();
+            ViewBag.TotalUsers = totalUsers;
             ViewBag.currentUser = User.Identity.Name;
             return View();
         }
