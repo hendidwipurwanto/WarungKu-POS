@@ -41,7 +41,8 @@ In appsettings.json, update the connection string:
 "ConnectionStrings": {
   "DefaultConnection": "Server=YOUR_SERVER_NAME;Database=WarungKuDb;Trusted_Connection=True;"
 }
-3. **Apply the database migration**
+
+03. **Apply the database migration**
 Using Package Manager Console:
                       Update-Database
 
