@@ -12,7 +12,16 @@ namespace Warungku.Core.Application
     public class AutoMapperProfile : Profile
     {
         public AutoMapperProfile()
-        {          
+        {
+            //transaction mapping
+            CreateMap<TransactionRequest, Transaction>();
+            CreateMap<Transaction, TransactionResponse>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
+
+            // pos mapping
+            CreateMap<PosRequest, PointOfSale>();
+            CreateMap<PointOfSale, PosResponse>()
+                .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId));
 
             // Category mappings
             CreateMap<CategoryRequest, Category>();
