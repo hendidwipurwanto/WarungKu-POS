@@ -1,10 +1,8 @@
 ﻿var table;
-//var totalAmount = 0;
 $(document).ready(function ()
 {
     $('#cashPaymentModalBtn').on('click', function () {
         $.get('/PointOfSales/CreateTransaction', function (data) {
-            // Masukkan HTML yang didapat ke dalam placeholder
             console.log('------------------------------------');
             console.log(data);
             $('#modal-add-placeholder').html(data);
@@ -14,36 +12,40 @@ $(document).ready(function ()
             $('#discountModal').val($('#discount').val());
             $('#voucherModal').val($('#voucher').val());
             $('#grandTotalModal').val(parseInt($('#grandTotalText').text()));
-            
+            $('#grandTotalCashReadOnly').val(parseInt($('#grandTotalText').text()));
+
             $('#cancelBtn').on('click', function () {
                 $('#addModal').modal('hide');
-               // location.reload();
             });
             $('#xClose').on('click', function () {
                 $('#addModal').modal('hide');
                 location.reload();
             });
+            //-------------------------------------- start Cash Payment Calculator -----------------------
+            $('#cashPayment').keyup(function () {
+                let grandTotal = parseInt($('#grandTotalCashReadOnly').val());
+                let cash = parseInt($('#cashPayment').val());
+                let change = cash - grandTotal;
+                $('#changeCashReadOnly').val(change);
+            });
+            //-------------------------------------- End Cash Payment Calculator -----------------------
         });
     });
 
-
-
-
-
-    //--------------------------------- start jquery data table
+ //--------------------------------- start jquery data table
 
     table = $('#grid').DataTable();
 
     $('#addBtn').on('click', function () {
-        var itemId = $('#ProductId').val(); // ambil ID
-        var itemName = $('#ProductId option:selected').text(); // ambil nama item
+        var itemId = $('#ProductId').val();
+        var itemName = $('#ProductId option:selected').text(); // get item name
         var qty = parseInt($('#Quantity').val());
         var price = parseInt($('#Price').val());
         var subtotal = qty * price;
 
-        // Tambahkan baris ke DataTable
+        // add new row into table
         table.row.add([
-            itemName, // kita tampilkan nama item
+            itemName, 
             qty,
             price,
             subtotal,
@@ -56,26 +58,21 @@ $(document).ready(function ()
         //-------------------------------------- start grand total-----------------------
         var totalAmount = 0;
         table.rows().every(function () {
-            var data = this.data();         // ambil array data di row
-            var subtotal = parseInt(data[3]); // kolom ke-4 (index ke-3 = Subtotal)
+            var data = this.data();         
+            var subtotal = parseInt(data[3]); 
             totalAmount += subtotal;
         });
 
         $('#totalText').text(totalAmount);
 
         let grandTotal = totalAmount + parseInt($('#discountText').text())
-
+        //-------------------------------------- end grand total-----------------------
         $('#grandTotalText').text(grandTotal);
 
-        //-------------------------------------- End grand total-----------------------
-
-        
-        // $('#totalAmount').text(gt);
     });
 
     // Delete handler
     $('#grid tbody').on('click', '.btn-delete', function () {
-       // table.row($(this).parents('tr')).remove().draw();
         var row = table.row($(this).closest('tr'));
         var data = row.data();
         let subtotal = parseInt(data[3]);
@@ -83,21 +80,8 @@ $(document).ready(function ()
         $('#totalText').text(totalText);
         let grandTotal = parseInt($('#totalText').text()) + parseInt($('#discountText').text()) + parseInt($('#voucherText').text());
         $('#grandTotalText').text(grandTotal);
-        //parseInt($('#granTotalText').text());
-        
-
-
         row.remove().draw();
     });
-
-    //-------------------------------------- start Cash Payment Calculator -----------------------
-    $("#cash").keyup(function () {
-        let grandTotal = $('#grandTotalCash').val();
-        let cash = $('#cash').val() === "" ? "0" : $('#cash').val();
-        let change = parseInt(cash) - parseInt(grandTotal);
-        $('#changeCash').val(change);
-    });
-    //-------------------------------------- End Cash Payment Calculator -----------------------
 
     $("#discount").keyup(function () {
         let discountAmount = parseInt($('#discount').val()) * parseInt($('#totalText').text()) / 100; 
@@ -123,28 +107,6 @@ $(document).ready(function ()
         console.log(grandTotal);
 
     });
-
-
-    //---------------------------------------- Start open modal cash Payment--------------------
-   /* $('#cashPaymentModalBtn').on('click', function () {
-        $('#cashPaymentModal').modal('show');
-        let gt = $('#grandTotalText').text();
-        $('#totalText').text(gt);
-        $('#grandTotalCash').val(parseInt(gt));
-
-    }); */
-
-
-
-
-
-
-
-
-
-
-
-
 
 });
 

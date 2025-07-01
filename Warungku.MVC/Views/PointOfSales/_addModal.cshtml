@@ -16,34 +16,28 @@
 
                 <div class="modal-body">
                     <form asp-action="CreateTransaction" method="post">
-                        <input asp-for="Date" class="form-control" placeholder="Date" id="dateModal" />
-                        <input asp-for="User" class="form-control" placeholder="user" id="userModal" />
-                        <input asp-for="Total" class="form-control" placeholder="total" id="totalModal"/>
-                        <input asp-for="Discount" class="form-control" placeholder="discount" id="discountModal" />
-                        <input asp-for="Voucher" class="form-control" placeholder="voucher" id="voucherModal" />
-                        <input asp-for="GrandTotal" class="form-control" placeholder="grandtotal" id="grandTotalModal" />
+                        <input asp-for="Date" class="form-control" placeholder="Date" id="dateModal" hidden />
+                        <input asp-for="User" class="form-control" placeholder="user" id="userModal" hidden />
+                        <input asp-for="Total" class="form-control" placeholder="total" id="totalModal" hidden/>
+                        <input asp-for="Discount" class="form-control" placeholder="discount" id="discountModal" hidden/>
+                        <input asp-for="Voucher" class="form-control" placeholder="voucher" id="voucherModal" hidden />
+                        <input asp-for="GrandTotal" class="form-control" placeholder="grandtotal" id="grandTotalModal" hidden />
                         <div class="form-group row">
                             <label for="GrandTotal" class="col-sm-4 col-form-label">Grand Total</label>
                             <div class="col-sm-8">
-                                <input style="text-align:right;" type="text" class="form-control" id="grandTotalCash" value="" readonly>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="GrandTotal" class="col-sm-4 col-form-label">Grand Total</label>
-                            <div class="col-sm-8">
-                                <input style="text-align:right;" type="text" class="form-control" id="grandTotalCash" value="" readonly>
+                                <input style="text-align:right;" type="text" class="form-control" id="grandTotalCashReadOnly" value="" readonly>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="Cash" class="col-sm-4 col-form-label">Cash</label>
                             <div class="col-sm-8">
-                                <input style="text-align:right;" type="text" class="form-control" id="cash">
+                                <input style="text-align:right;" type="text" class="form-control" id="cashPayment">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="Change" class="col-sm-4 col-form-label">Change</label>
                             <div class="col-sm-8">
-                                <input style="text-align:right;" type="text" class="form-control" id="changeCash" value="" readonly>
+                                <input style="text-align:right;" type="text" class="form-control" id="changeCashReadOnly" value="" readonly>
 
                             </div>
                         </div>
