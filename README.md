@@ -45,6 +45,9 @@ In appsettings.json, update the connection string:
 03. **Apply the database migration**
 Using Package Manager Console:
                       Update-Database
+   **make sure  when you do the migration, the default project look  like screenshot below:**
+    ![image](https://github.com/user-attachments/assets/fe60c2da-1878-40a7-a3cf-87d1f6d07fa9)
+
 
 4.**Run the application**
 5.**Register a new user, log in, and use the system.**
